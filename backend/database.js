@@ -2,16 +2,21 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-// Ruta fija: la base de datos siempre estará en la raíz del backend
+// Ruta absoluta: evita múltiples data.db
 const dbPath = path.resolve(__dirname, 'data.db');
-const db = new sqlite3.Database(dbPath);
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('❌ Error al abrir la base de datos:', err.message);
+  } else {
+    console.log('✅ Base de datos conectada:', dbPath);
+  }
+});
 
-console.log('📂 Base de datos en:', dbPath);
-
+// Crear tablas si no existen
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS about (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY CHECK (id = 1),
       content TEXT NOT NULL
     )
   `);

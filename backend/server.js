@@ -4,20 +4,19 @@ const cors = require('cors');
 const db = require('./database');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 app.use(cors());
-app.use(express.json());
 
-// Ruta: GET /api/about
+// Ruta: /api/about
 app.get('/api/about', (req, res) => {
-  db.get('SELECT content FROM about LIMIT 1', (err, row) => {
+  db.get('SELECT content FROM about WHERE id = 1', (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(row ? { content: row.content } : { content: '' });
+    res.json({ content: row?.content || '' });
   });
 });
 
-// Ruta: GET /api/experiences
+// Ruta: /api/experiences
 app.get('/api/experiences', (req, res) => {
   db.all('SELECT * FROM experiences', (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -25,7 +24,7 @@ app.get('/api/experiences', (req, res) => {
   });
 });
 
-// Ruta: GET /api/projects
+// Ruta: /api/projects
 app.get('/api/projects', (req, res) => {
   db.all('SELECT * FROM projects', (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -37,11 +36,16 @@ app.get('/api/projects', (req, res) => {
       }));
       res.json(projects);
     } catch (e) {
-      res.status(500).json({ error: 'Error al procesar proyectos' });
+      res.status(500).json({ error: 'Error al parsear proyectos' });
     }
   });
 });
 
+// Ruta raíz (opcional)
+app.get('/', (req, res) => {
+  res.json({ message: 'Backend de hoja de vida funcionando ✅' });
+});
+
 app.listen(PORT, () => {
-  console.log(`✅ Backend corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
