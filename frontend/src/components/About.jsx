@@ -18,6 +18,8 @@ const About = () => {
           <a href="#" className="btn">Leer mas</a>
       </div>
     </section>
+
+    
   );
 };
 
